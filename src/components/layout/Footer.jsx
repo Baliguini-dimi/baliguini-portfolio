@@ -24,7 +24,7 @@ function Footer() {
           {socialLinks.map((item) => {
             const isExternal = item.href.startsWith('http')
             return (
-              
+              <a
                 key={item.label}
                 href={item.href}
                 target={isExternal ? '_blank' : undefined}

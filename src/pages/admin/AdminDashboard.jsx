@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { signOut } from '../../lib/auth'
 import { useAuth } from '../../context/AuthContext'
 
@@ -28,8 +28,17 @@ function AdminDashboard() {
         Connecté en tant que {user?.email}
       </p>
 
+      <div className="flex gap-4 mt-8">
+        <Link
+          to="/admin/projets"
+          className="font-mono text-sm text-signal border border-signal rounded px-4 py-2 hover:bg-signal hover:text-ink transition-colors"
+        >
+          Gérer les projets
+        </Link>
+      </div>
+
       <p className="font-mono text-mist text-sm mt-8">
-        CRUD projets et articles à construire (étapes 10 et 11).
+        CRUD articles à construire (étape 11).
       </p>
     </div>
   )
