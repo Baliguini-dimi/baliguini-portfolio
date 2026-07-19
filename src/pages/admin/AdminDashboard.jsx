@@ -1,0 +1,38 @@
+import { useNavigate } from 'react-router-dom'
+import { signOut } from '../../lib/auth'
+import { useAuth } from '../../context/AuthContext'
+
+function AdminDashboard() {
+  const { user } = useAuth()
+  const navigate = useNavigate()
+
+  async function handleLogout() {
+    await signOut()
+    navigate('/admin/login', { replace: true })
+  }
+
+  return (
+    <div className="max-w-6xl mx-auto px-6 py-24">
+      <div className="flex items-center justify-between">
+        <h1 className="font-display font-bold text-3xl">Administration</h1>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="font-mono text-sm text-mist hover:text-ember transition-colors"
+        >
+          Se déconnecter
+        </button>
+      </div>
+
+      <p className="font-mono text-mist text-sm mt-4">
+        Connecté en tant que {user?.email}
+      </p>
+
+      <p className="font-mono text-mist text-sm mt-8">
+        CRUD projets et articles à construire (étapes 10 et 11).
+      </p>
+    </div>
+  )
+}
+
+export default AdminDashboard
