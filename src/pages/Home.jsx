@@ -1,8 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { getFeaturedProjects } from '../lib/projects'
+import ProjectCard from '../components/projects/ProjectCard'
 
 function Home() {
   const location = useLocation()
+  const [projects, setProjects] = useState([])
+  const [loadError, setLoadError] = useState(null)
 
   useEffect(() => {
     if (location.hash) {
@@ -12,6 +16,12 @@ function Home() {
       }
     }
   }, [location.hash])
+
+  useEffect(() => {
+    getFeaturedProjects()
+      .then(setProjects)
+      .catch((error) => setLoadError(error.message))
+  }, [])
 
   return (
     <div>
@@ -48,7 +58,20 @@ function Home() {
 
       <section className="max-w-6xl mx-auto px-6 py-24">
         <h2 className="font-display font-bold text-2xl">Projets phares</h2>
-        <p className="font-mono text-mist text-sm mt-2">à construire — en attente de la liste des projets à mettre en avant</p>
+
+        {loadError && (
+          <p className="font-mono text-sm text-ember mt-4">{loadError}</p>
+        )}
+
+        {!loadError && projects.length === 0 && (
+          <p className="font-mono text-mist text-sm mt-4">Chargement...</p>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+          {projects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
       </section>
 
       <section className="max-w-6xl mx-auto px-6 py-24">
