@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 const currentYear = new Date().getFullYear()
 
 const socialLinks = [
@@ -19,21 +21,30 @@ function Footer() {
         </p>
 
         <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-          {socialLinks.map((link) => {
-            const isExternal = link.href.startsWith('http')
+          {socialLinks.map((item) => {
+            const isExternal = item.href.startsWith('http')
             return (
-              <a
-                key={link.label}
-                href={link.href}
+              
+                key={item.label}
+                href={item.href}
                 target={isExternal ? '_blank' : undefined}
                 rel={isExternal ? 'noopener noreferrer' : undefined}
                 className="font-body text-sm text-mist hover:text-signal transition-colors"
               >
-                {link.label}
+                {item.label}
               </a>
             )
           })}
         </nav>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-6 pb-6 flex justify-center sm:justify-end">
+        <Link
+          to="/admin"
+          className="font-mono text-xs text-mist/50 hover:text-mist transition-colors"
+        >
+          Admin
+        </Link>
       </div>
     </footer>
   )
