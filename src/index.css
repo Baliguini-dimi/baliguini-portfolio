@@ -16,3 +16,76 @@
 body {
   font-family: var(--font-body);
 }
+
+.prose-content h1,
+.prose-content h2,
+.prose-content h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-content h2 {
+  font-size: 1.5rem;
+}
+
+.prose-content h3 {
+  font-size: 1.25rem;
+}
+
+.prose-content p {
+  margin-bottom: 1rem;
+}
+
+.prose-content ul,
+.prose-content ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.prose-content ul {
+  list-style-type: disc;
+}
+
+.prose-content ol {
+  list-style-type: decimal;
+}
+
+.prose-content li {
+  margin-bottom: 0.5rem;
+}
+
+.prose-content a {
+  color: var(--color-signal);
+  text-decoration: underline;
+}
+
+.prose-content code {
+  font-family: var(--font-mono);
+  background-color: var(--color-surface);
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+.prose-content pre {
+  background-color: var(--color-surface);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.prose-content pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.prose-content blockquote {
+  border-left: 2px solid var(--color-signal);
+  padding-left: 1rem;
+  color: var(--color-mist);
+  font-style: italic;
+  margin-bottom: 1rem;
+}

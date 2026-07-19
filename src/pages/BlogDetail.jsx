@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getPostBySlug, getAllPosts } from '../lib/posts'
 import PostCard from '../components/blog/PostCard'
+import ReactMarkdown from 'react-markdown'
 
 function formatDate(dateString) {
   if (!dateString) return null
@@ -81,8 +82,8 @@ function BlogDetail() {
         />
       )}
 
-      <div className="font-body text-bone leading-relaxed mt-8 whitespace-pre-wrap">
-        {post.content}
+      <div className="font-body text-bone leading-relaxed mt-8 prose-content">
+        <ReactMarkdown>{post.content}</ReactMarkdown>
       </div>
 
       {relatedPosts.length > 0 && (

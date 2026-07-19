@@ -35,6 +35,12 @@ function AdminDashboard() {
         >
           Gérer les projets
         </Link>
+        <Link
+          to="/admin/articles"
+          className="font-mono text-sm text-signal border border-signal rounded px-4 py-2 hover:bg-signal hover:text-ink transition-colors"
+        >
+          Gérer les articles
+        </Link>
       </div>
 
       <p className="font-mono text-mist text-sm mt-8">
