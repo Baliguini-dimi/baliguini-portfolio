@@ -17,7 +17,7 @@ export async function getFeaturedProjects() {
 export async function getAllProjects() {
   const { data, error } = await supabase
     .from('projects')
-    .select('*')
+    .select('*, categories(name, slug)')
     .order('display_order', { ascending: true })
 
   if (error) {
