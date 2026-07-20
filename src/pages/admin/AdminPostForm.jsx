@@ -7,6 +7,7 @@ import {
   getPostById,
 } from '../../lib/posts'
 import { getAllCategories } from '../../lib/projects'
+import { validatePostForm } from '../../lib/validation'
 
 const emptyForm = {
   slug: '',
@@ -43,6 +44,7 @@ function AdminPostForm() {
   const [isLoading, setIsLoading] = useState(isEditMode)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState(null)
+  const [fieldErrors, setFieldErrors] = useState({})
   const [showPreview, setShowPreview] = useState(false)
 
   useEffect(() => {
@@ -88,6 +90,15 @@ function AdminPostForm() {
   async function handleSubmit(event) {
     event.preventDefault()
     setError(null)
+
+    const validationErrors = validatePostForm(form)
+    setFieldErrors(validationErrors)
+
+    if (Object.keys(validationErrors).length > 0) {
+      setError('Merci de corriger les champs indiqués ci-dessous avant d\'enregistrer.')
+      return
+    }
+
     setIsSaving(true)
 
     const isPublishing = form.status === 'published'
@@ -147,6 +158,9 @@ function AdminPostForm() {
             onChange={(e) => handleTitleChange(e.target.value)}
             className={inputClass}
           />
+          {fieldErrors.title && (
+            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.title}</p>
+          )}
         </div>
 
         <div>
@@ -158,6 +172,9 @@ function AdminPostForm() {
             onChange={(e) => updateField('slug', slugify(e.target.value))}
             className={inputClass}
           />
+          {fieldErrors.slug && (
+            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.slug}</p>
+          )}
         </div>
 
         <div>
@@ -170,6 +187,9 @@ function AdminPostForm() {
             onChange={(e) => updateField('excerpt', e.target.value)}
             className={inputClass}
           />
+          {fieldErrors.excerpt && (
+            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.excerpt}</p>
+          )}
         </div>
 
         <div>
@@ -199,6 +219,9 @@ function AdminPostForm() {
               placeholder="## Titre de section&#10;&#10;Texte en **gras**, en *italique*, ou une [liste de liens](https://exemple.com)."
             />
           )}
+          {fieldErrors.content && (
+            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.content}</p>
+          )}
         </div>
 
         <div>
@@ -226,6 +249,9 @@ function AdminPostForm() {
             onChange={(e) => updateField('cover_image_url', e.target.value)}
             className={inputClass}
           />
+          {fieldErrors.cover_image_url && (
+            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.cover_image_url}</p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4 items-end">

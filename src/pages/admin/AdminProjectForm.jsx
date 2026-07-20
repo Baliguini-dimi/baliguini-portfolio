@@ -6,6 +6,7 @@ import {
   getProjectById,
   getAllCategories,
 } from '../../lib/projects'
+import { validateProjectForm } from '../../lib/validation'
 
 const emptyForm = {
   slug: '',
@@ -43,6 +44,7 @@ function AdminProjectForm() {
   const [isLoading, setIsLoading] = useState(isEditMode)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState(null)
+  const [fieldErrors, setFieldErrors] = useState({})
 
   useEffect(() => {
     getAllCategories().then(setCategories).catch((err) => setError(err.message))
@@ -89,6 +91,15 @@ function AdminProjectForm() {
   async function handleSubmit(event) {
     event.preventDefault()
     setError(null)
+
+    const validationErrors = validateProjectForm(form)
+    setFieldErrors(validationErrors)
+
+    if (Object.keys(validationErrors).length > 0) {
+      setError('Merci de corriger les champs indiqués ci-dessous avant d\'enregistrer.')
+      return
+    }
+
     setIsSaving(true)
 
     const payload = {
@@ -152,6 +163,9 @@ function AdminProjectForm() {
             onChange={(e) => handleTitleChange(e.target.value)}
             className={inputClass}
           />
+          {fieldErrors.title && (
+            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.title}</p>
+          )}
         </div>
 
         <div>
@@ -163,6 +177,9 @@ function AdminProjectForm() {
             onChange={(e) => updateField('slug', slugify(e.target.value))}
             className={inputClass}
           />
+          {fieldErrors.slug && (
+            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.slug}</p>
+          )}
         </div>
 
         <div>
@@ -174,6 +191,9 @@ function AdminProjectForm() {
             onChange={(e) => updateField('short_description', e.target.value)}
             className={inputClass}
           />
+          {fieldErrors.short_description && (
+            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.short_description}</p>
+          )}
         </div>
 
         <div>
@@ -245,6 +265,9 @@ function AdminProjectForm() {
             onChange={(e) => updateField('cover_image_url', e.target.value)}
             className={inputClass}
           />
+          {fieldErrors.cover_image_url && (
+            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.cover_image_url}</p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -256,6 +279,9 @@ function AdminProjectForm() {
               onChange={(e) => updateField('github_url', e.target.value)}
               className={inputClass}
             />
+            {fieldErrors.github_url && (
+              <p className="font-mono text-xs text-ember mt-1">{fieldErrors.github_url}</p>
+            )}
           </div>
           <div>
             <label htmlFor="live_url" className={labelClass}>Lien démo live</label>
@@ -265,6 +291,9 @@ function AdminProjectForm() {
               onChange={(e) => updateField('live_url', e.target.value)}
               className={inputClass}
             />
+            {fieldErrors.live_url && (
+              <p className="font-mono text-xs text-ember mt-1">{fieldErrors.live_url}</p>
+            )}
           </div>
         </div>
 
