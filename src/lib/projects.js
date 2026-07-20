@@ -107,3 +107,16 @@ export async function getAllCategories() {
 
   return data
 }
+
+export async function getOnlineProjectsCount() {
+  const { count, error } = await supabase
+    .from('projects')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'online')
+
+  if (error) {
+    throw new Error(`Impossible de compter les projets : ${error.message}`)
+  }
+
+  return count
+}

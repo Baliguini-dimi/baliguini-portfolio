@@ -42,10 +42,6 @@ function AdminDashboard() {
           Gérer les articles
         </Link>
       </div>
-
-      <p className="font-mono text-mist text-sm mt-8">
-        CRUD articles à construire (étape 11).
-      </p>
     </div>
   )
 }

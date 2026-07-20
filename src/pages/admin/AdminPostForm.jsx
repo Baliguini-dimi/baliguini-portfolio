@@ -88,7 +88,7 @@ function AdminPostForm() {
     setFieldErrors(validationErrors)
 
     if (Object.keys(validationErrors).length > 0) {
-      setError('Merci de corriger les champs indiqués ci-dessous avant d\'enregistrer.')
+      setError("Merci de corriger les champs indiques ci-dessous avant d'enregistrer.")
       return
     }
 
@@ -138,7 +138,7 @@ function AdminPostForm() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-24">
       <h1 className="font-display font-bold text-3xl">
-        {isEditMode ? 'Modifier l\'article' : 'Nouvel article'}
+        {isEditMode ? "Modifier l'article" : 'Nouvel article'}
       </h1>
 
       <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
@@ -193,13 +193,13 @@ function AdminPostForm() {
               onClick={() => setShowPreview((v) => !v)}
               className="font-mono text-xs text-signal hover:opacity-80"
             >
-              {showPreview ? 'Voir l\'éditeur' : 'Aperçu'}
+              {showPreview ? "Voir l'editeur" : 'Apercu'}
             </button>
           </div>
 
           {showPreview ? (
             <div className="bg-surface border border-surface rounded px-4 py-3 min-h-[16rem] prose-content">
-              <ReactMarkdown>{form.content || '*Rien à prévisualiser*'}</ReactMarkdown>
+              <ReactMarkdown>{form.content || '*Rien a previsualiser*'}</ReactMarkdown>
             </div>
           ) : (
             <textarea
@@ -218,7 +218,7 @@ function AdminPostForm() {
         </div>
 
         <div>
-          <label htmlFor="category_id" className={labelClass}>Catégorie</label>
+          <label htmlFor="category_id" className={labelClass}>Categorie</label>
           <select
             id="category_id"
             value={form.category_id}
@@ -270,10 +270,10 @@ function AdminPostForm() {
             className={inputClass}
           >
             <option value="draft">Brouillon</option>
-            <option value="published">Publié</option>
+            <option value="published">Publie</option>
           </select>
           <p className="font-mono text-xs text-mist mt-1">
-            Passer en "Publié" enregistre la date de publication à maintenant.
+            Passer en "Publie" enregistre la date de publication a maintenant.
           </p>
         </div>
 
