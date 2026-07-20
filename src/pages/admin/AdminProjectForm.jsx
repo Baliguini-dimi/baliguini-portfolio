@@ -7,6 +7,7 @@ import {
   getAllCategories,
 } from '../../lib/projects'
 import { validateProjectForm } from '../../lib/validation'
+import { slugify } from '../../lib/slugify'
 
 const emptyForm = {
   slug: '',
@@ -23,15 +24,6 @@ const emptyForm = {
   status: 'draft',
   featured: false,
   display_order: 0,
-}
-
-function slugify(text) {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
 }
 
 function AdminProjectForm() {

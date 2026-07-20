@@ -1,107 +1,313 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { getAllPosts, deletePost } from '../../lib/posts'
+import { useNavigate, useParams } from 'react-router-dom'
+import ReactMarkdown from 'react-markdown'
+import {
+  createPost,
+  updatePost,
+  getPostById,
+} from '../../lib/posts'
+import { getAllCategories } from '../../lib/projects'
+import { validatePostForm } from '../../lib/validation'
+import { slugify } from '../../lib/slugify'
 
-const statusLabels = {
-  draft: 'Brouillon',
-  published: 'Publié',
+const emptyForm = {
+  slug: '',
+  title: '',
+  excerpt: '',
+  content: '',
+  category_id: '',
+  cover_image_url: '',
+  reading_time_minutes: '',
+  status: 'draft',
 }
 
-function AdminPostsList() {
-  const [posts, setPosts] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [loadError, setLoadError] = useState(null)
-  const [deletingId, setDeletingId] = useState(null)
+function estimateReadingTime(text) {
+  const words = text.trim().split(/\s+/).filter(Boolean).length
+  return Math.max(1, Math.round(words / 200))
+}
 
-  function loadPosts() {
-    setIsLoading(true)
-    getAllPosts()
-      .then(setPosts)
-      .catch((error) => setLoadError(error.message))
-      .finally(() => setIsLoading(false))
-  }
+function AdminPostForm() {
+  const { id } = useParams()
+  const isEditMode = Boolean(id)
+  const navigate = useNavigate()
+
+  const [form, setForm] = useState(emptyForm)
+  const [categories, setCategories] = useState([])
+  const [isLoading, setIsLoading] = useState(isEditMode)
+  const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState(null)
+  const [fieldErrors, setFieldErrors] = useState({})
+  const [showPreview, setShowPreview] = useState(false)
 
   useEffect(() => {
-    loadPosts()
+    getAllCategories().then(setCategories).catch((err) => setError(err.message))
   }, [])
 
-  async function handleDelete(post) {
-    const confirmed = window.confirm(
-      `Supprimer définitivement "${post.title}" ? Cette action est irréversible.`
-    )
-    if (!confirmed) return
+  useEffect(() => {
+    if (!isEditMode) return
 
-    setDeletingId(post.id)
+    getPostById(id)
+      .then((post) => {
+        setForm({
+          slug: post.slug ?? '',
+          title: post.title ?? '',
+          excerpt: post.excerpt ?? '',
+          content: post.content ?? '',
+          category_id: post.category_id ?? '',
+          cover_image_url: post.cover_image_url ?? '',
+          reading_time_minutes: post.reading_time_minutes ?? '',
+          status: post.status ?? 'draft',
+        })
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setIsLoading(false))
+  }, [id, isEditMode])
+
+  function updateField(field, value) {
+    setForm((current) => ({ ...current, [field]: value }))
+  }
+
+  function handleTitleChange(value) {
+    setForm((current) => ({
+      ...current,
+      title: value,
+      slug: isEditMode ? current.slug : slugify(value),
+    }))
+  }
+
+  function handleAutoReadingTime() {
+    updateField('reading_time_minutes', String(estimateReadingTime(form.content)))
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault()
+    setError(null)
+
+    const validationErrors = validatePostForm(form)
+    setFieldErrors(validationErrors)
+
+    if (Object.keys(validationErrors).length > 0) {
+      setError('Merci de corriger les champs indiqués ci-dessous avant d\'enregistrer.')
+      return
+    }
+
+    setIsSaving(true)
+
+    const isPublishing = form.status === 'published'
+
+    const payload = {
+      slug: form.slug.trim(),
+      title: form.title.trim(),
+      excerpt: form.excerpt.trim(),
+      content: form.content,
+      category_id: form.category_id || null,
+      cover_image_url: form.cover_image_url.trim() || null,
+      reading_time_minutes: form.reading_time_minutes
+        ? Number(form.reading_time_minutes)
+        : null,
+      status: form.status,
+      published_at: isPublishing ? new Date().toISOString() : null,
+    }
+
     try {
-      await deletePost(post.id)
-      setPosts((current) => current.filter((p) => p.id !== post.id))
-    } catch (error) {
-      window.alert(error.message)
-    } finally {
-      setDeletingId(null)
+      if (isEditMode) {
+        await updatePost(id, payload)
+      } else {
+        await createPost(payload)
+      }
+      navigate('/admin/articles', { replace: true })
+    } catch (err) {
+      setError(err.message)
+      setIsSaving(false)
     }
   }
 
-  return (
-    <div className="max-w-6xl mx-auto px-6 py-24">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="font-display font-bold text-3xl">Articles</h1>
-        <Link
-          to="/admin/articles/nouveau"
-          className="font-mono text-sm bg-signal text-ink rounded px-4 py-2 hover:opacity-90 transition-opacity"
-        >
-          + Nouvel article
-        </Link>
+  if (isLoading) {
+    return (
+      <div className="max-w-3xl mx-auto px-6 py-24">
+        <p className="font-mono text-mist text-sm">Chargement...</p>
       </div>
+    )
+  }
 
-      {loadError && (
-        <p className="font-mono text-sm text-ember mt-6">{loadError}</p>
-      )}
+  const inputClass =
+    'w-full bg-surface border border-surface rounded px-3 py-2 text-bone focus:outline-none focus:border-signal'
+  const labelClass = 'font-mono text-xs text-mist block mb-1'
 
-      {isLoading && !loadError && (
-        <p className="font-mono text-mist text-sm mt-6">Chargement...</p>
-      )}
+  return (
+    <div className="max-w-3xl mx-auto px-6 py-24">
+      <h1 className="font-display font-bold text-3xl">
+        {isEditMode ? 'Modifier l\'article' : 'Nouvel article'}
+      </h1>
 
-      {!isLoading && !loadError && (
-        <div className="mt-8 flex flex-col gap-2">
-          {posts.map((post) => (
-            <div
-              key={post.id}
-              className="flex items-center justify-between gap-4 bg-surface rounded px-4 py-3"
-            >
-              <div className="min-w-0">
-                <p className="font-body text-bone truncate">{post.title}</p>
-                <p className="font-mono text-xs text-mist mt-1">
-                  {statusLabels[post.status] ?? post.status}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3 shrink-0">
-                <Link
-                  to={`/admin/articles/${post.id}/modifier`}
-                  className="font-mono text-xs text-signal hover:opacity-80"
-                >
-                  Modifier
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(post)}
-                  disabled={deletingId === post.id}
-                  className="font-mono text-xs text-ember hover:opacity-80 disabled:opacity-50"
-                >
-                  {deletingId === post.id ? 'Suppression...' : 'Supprimer'}
-                </button>
-              </div>
-            </div>
-          ))}
-
-          {posts.length === 0 && (
-            <p className="font-mono text-mist text-sm">Aucun article pour l'instant.</p>
+      <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
+        <div>
+          <label htmlFor="title" className={labelClass}>Titre *</label>
+          <input
+            id="title"
+            required
+            value={form.title}
+            onChange={(e) => handleTitleChange(e.target.value)}
+            className={inputClass}
+          />
+          {fieldErrors.title && (
+            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.title}</p>
           )}
         </div>
-      )}
+
+        <div>
+          <label htmlFor="slug" className={labelClass}>Slug (URL) *</label>
+          <input
+            id="slug"
+            required
+            value={form.slug}
+            onChange={(e) => updateField('slug', slugify(e.target.value))}
+            className={inputClass}
+          />
+          {fieldErrors.slug && (
+            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.slug}</p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="excerpt" className={labelClass}>Extrait *</label>
+          <textarea
+            id="excerpt"
+            required
+            rows={2}
+            value={form.excerpt}
+            onChange={(e) => updateField('excerpt', e.target.value)}
+            className={inputClass}
+          />
+          {fieldErrors.excerpt && (
+            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.excerpt}</p>
+          )}
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <label htmlFor="content" className={labelClass}>Contenu (Markdown) *</label>
+            <button
+              type="button"
+              onClick={() => setShowPreview((v) => !v)}
+              className="font-mono text-xs text-signal hover:opacity-80"
+            >
+              {showPreview ? 'Voir l\'éditeur' : 'Aperçu'}
+            </button>
+          </div>
+
+          {showPreview ? (
+            <div className="bg-surface border border-surface rounded px-4 py-3 min-h-[16rem] prose-content">
+              <ReactMarkdown>{form.content || '*Rien à prévisualiser*'}</ReactMarkdown>
+            </div>
+          ) : (
+            <textarea
+              id="content"
+              required
+              rows={16}
+              value={form.content}
+              onChange={(e) => updateField('content', e.target.value)}
+              className={`${inputClass} font-mono text-sm`}
+              placeholder="## Titre de section&#10;&#10;Texte en **gras**, en *italique*, ou une [liste de liens](https://exemple.com)."
+            />
+          )}
+          {fieldErrors.content && (
+            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.content}</p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="category_id" className={labelClass}>Catégorie</label>
+          <select
+            id="category_id"
+            value={form.category_id}
+            onChange={(e) => updateField('category_id', e.target.value)}
+            className={inputClass}
+          >
+            <option value="">— Aucune —</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="cover_image_url" className={labelClass}>
+            URL image de couverture (upload à venir en étape 16)
+          </label>
+          <input
+            id="cover_image_url"
+            value={form.cover_image_url}
+            onChange={(e) => updateField('cover_image_url', e.target.value)}
+            className={inputClass}
+          />
+          {fieldErrors.cover_image_url && (
+            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.cover_image_url}</p>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 items-end">
+          <div>
+            <label htmlFor="reading_time_minutes" className={labelClass}>
+              Temps de lecture (minutes)
+            </label>
+            <input
+              id="reading_time_minutes"
+              type="number"
+              min="1"
+              value={form.reading_time_minutes}
+              onChange={(e) => updateField('reading_time_minutes', e.target.value)}
+              className={inputClass}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleAutoReadingTime}
+            className="font-mono text-xs text-signal hover:opacity-80 pb-2"
+          >
+            Estimer depuis le contenu
+          </button>
+        </div>
+
+        <div>
+          <label htmlFor="status" className={labelClass}>Statut</label>
+          <select
+            id="status"
+            value={form.status}
+            onChange={(e) => updateField('status', e.target.value)}
+            className={inputClass}
+          >
+            <option value="draft">Brouillon</option>
+            <option value="published">Publié</option>
+          </select>
+          <p className="font-mono text-xs text-mist mt-1">
+            Passer en "Publié" enregistre la date de publication à maintenant.
+          </p>
+        </div>
+
+        {error && (
+          <p className="font-mono text-sm text-ember">{error}</p>
+        )}
+
+        <div className="flex gap-4 mt-2">
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="font-mono text-sm bg-signal text-ink rounded px-4 py-2 hover:opacity-90 transition-opacity disabled:opacity-50"
+          >
+            {isSaving ? 'Enregistrement...' : 'Enregistrer'}
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/admin/articles')}
+            className="font-mono text-sm text-mist hover:text-bone transition-colors"
+          >
+            Annuler
+          </button>
+        </div>
+      </form>
     </div>
   )
 }
 
-export default AdminPostsList
+export default AdminPostForm

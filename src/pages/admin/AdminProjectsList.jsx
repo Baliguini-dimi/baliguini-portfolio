@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getAllProjects, deleteProject } from '../../lib/projects'
-
-const statusLabels = {
-  draft: 'Brouillon',
-  online: 'En ligne',
-  in_progress: 'En cours',
-  archived: 'Archivé',
-}
+import { projectStatusLabels } from '../../lib/statusLabels'
 
 function AdminProjectsList() {
   const [projects, setProjects] = useState([])
@@ -74,7 +68,7 @@ function AdminProjectsList() {
               <div className="min-w-0">
                 <p className="font-body text-bone truncate">{project.title}</p>
                 <p className="font-mono text-xs text-mist mt-1">
-                  {statusLabels[project.status] ?? project.status}
+                  {projectStatusLabels[project.status] ?? project.status}
                   {project.featured && ' · mis en avant'}
                 </p>
               </div>

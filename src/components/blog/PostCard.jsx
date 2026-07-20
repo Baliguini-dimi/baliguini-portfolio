@@ -1,13 +1,5 @@
 import { Link } from 'react-router-dom'
-
-function formatDate(dateString) {
-  if (!dateString) return null
-  return new Date(dateString).toLocaleDateString('fr-FR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
-}
+import { formatDate } from '../../lib/formatDate'
 
 function PostCard({ post }) {
   return (

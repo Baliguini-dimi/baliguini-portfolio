@@ -1,10 +1,5 @@
 import { Link } from 'react-router-dom'
-
-const statusLabels = {
-  online: 'En ligne',
-  in_progress: 'En cours',
-  archived: 'Archivé',
-}
+import { projectStatusLabels } from '../../lib/statusLabels'
 
 function ProjectCard({ project }) {
   return (
@@ -29,7 +24,7 @@ function ProjectCard({ project }) {
           <h3 className="font-display font-bold text-lg text-bone">{project.title}</h3>
           {project.status !== 'online' && (
             <span className="font-mono text-xs text-ember shrink-0">
-              {statusLabels[project.status] ?? project.status}
+              {projectStatusLabels[project.status] ?? project.status}
             </span>
           )}
         </div>

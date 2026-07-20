@@ -2,12 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getProjectBySlug } from '../lib/projects'
 import SEO from '../components/seo/SEO'
-
-const statusLabels = {
-  online: 'En ligne',
-  in_progress: 'En cours',
-  archived: 'Archivé',
-}
+import { projectStatusLabels } from '../lib/statusLabels'
 
 function ProjectDetail() {
   const { slug } = useParams()
@@ -67,7 +62,7 @@ function ProjectDetail() {
         <h1 className="font-display font-bold text-3xl">{project.title}</h1>
         {project.status !== 'online' && (
           <span className="font-mono text-xs text-ember border border-ember rounded-full px-2 py-0.5">
-            {statusLabels[project.status] ?? project.status}
+            {projectStatusLabels[project.status] ?? project.status}
           </span>
         )}
       </div>

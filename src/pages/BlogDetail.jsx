@@ -1,18 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getPostBySlug, getAllPosts } from '../lib/posts'
-import PostCard from '../components/blog/PostCard'
 import ReactMarkdown from 'react-markdown'
 import SEO, { SITE_URL } from '../components/seo/SEO'
-
-function formatDate(dateString) {
-  if (!dateString) return null
-  return new Date(dateString).toLocaleDateString('fr-FR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
-}
+import { formatDate } from '../lib/formatDate'
+import { getPostBySlug, getAllPosts } from '../lib/posts'
+import PostCard from '../components/blog/PostCard'
 
 function BlogDetail() {
   const { slug } = useParams()
