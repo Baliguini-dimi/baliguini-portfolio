@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { getPostBySlug, getAllPosts } from '../lib/posts'
 import PostCard from '../components/blog/PostCard'
 import ReactMarkdown from 'react-markdown'
+import SEO, { SITE_URL } from '../components/seo/SEO'
 
 function formatDate(dateString) {
   if (!dateString) return null
@@ -60,8 +61,30 @@ function BlogDetail() {
     )
   }
 
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt,
+    image: post.cover_image_url || `${SITE_URL}/images/dimitri-hero.png`,
+    datePublished: post.published_at,
+    author: {
+      '@type': 'Person',
+      name: 'Dimitri Nelson Baliguini Demba',
+    },
+  }
+
   return (
     <div className="max-w-3xl mx-auto px-6 py-24">
+      <SEO
+        title={post.title}
+        description={post.excerpt}
+        image={post.cover_image_url}
+        url={`/blog/${post.slug}`}
+        type="article"
+        structuredData={articleSchema}
+      />
+
       <Link to="/blog" className="font-mono text-signal text-sm">
         &larr; Retour au blog
       </Link>

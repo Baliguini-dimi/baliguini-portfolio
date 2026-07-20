@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getAllPosts } from '../lib/posts'
 import PostCard from '../components/blog/PostCard'
+import SEO from '../components/seo/SEO'
 
 function Blog() {
   const [posts, setPosts] = useState([])
@@ -16,6 +17,12 @@ function Blog() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-24">
+      <SEO
+        title="Blog"
+        description="Articles techniques et retours d'expérience sur le développement web et mobile."
+        url="/blog"
+      />
+
       <h1 className="font-display font-bold text-3xl">Blog</h1>
 
       {loadError && (

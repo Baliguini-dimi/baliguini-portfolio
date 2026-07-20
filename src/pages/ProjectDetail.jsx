@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getProjectBySlug } from '../lib/projects'
+import SEO from '../components/seo/SEO'
 
 const statusLabels = {
   online: 'En ligne',
@@ -50,6 +51,14 @@ function ProjectDetail() {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-24">
+      <SEO
+        title={project.title}
+        description={project.short_description}
+        image={project.cover_image_url}
+        url={`/projets/${project.slug}`}
+        type="article"
+      />
+
       <Link to="/projets" className="font-mono text-signal text-sm">
         &larr; Retour aux projets
       </Link>

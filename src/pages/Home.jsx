@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { getFeaturedProjects } from '../lib/projects'
 import ProjectCard from '../components/projects/ProjectCard'
+import SEO, { SITE_URL } from '../components/seo/SEO'
 
 function Home() {
   const location = useLocation()
@@ -23,8 +24,30 @@ function Home() {
       .catch((error) => setLoadError(error.message))
   }, [])
 
+  const personSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Dimitri Nelson Baliguini Demba',
+    jobTitle: 'Développeur Web & Mobile',
+    url: SITE_URL,
+    image: `${SITE_URL}/images/dimitri-hero.png`,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Abidjan',
+      addressCountry: 'CI',
+    },
+    sameAs: [
+      'https://github.com/Baliguini-dimi',
+      'https://www.linkedin.com/in/dimitri-nelson-baligini-demba-4b17b32ba',
+      'https://x.com/baliguini_fils',
+      'https://www.instagram.com/dems_nb/',
+    ],
+  }
+
   return (
     <div>
+      <SEO url="/" structuredData={personSchema} />
+
       <section className="max-w-6xl mx-auto px-6 py-24 flex flex-col-reverse md:flex-row items-center gap-12">
         <div className="flex-1 text-center md:text-left">
           <h1 className="font-display font-bold text-4xl md:text-5xl leading-tight">

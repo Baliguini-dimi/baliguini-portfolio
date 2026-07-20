@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { getAllProjects } from '../lib/projects'
 import ProjectCard from '../components/projects/ProjectCard'
+import SEO from '../components/seo/SEO'
 
 function Projects() {
   const [projects, setProjects] = useState([])
@@ -32,6 +33,12 @@ function Projects() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-24">
+      <SEO
+        title="Projets"
+        description="Projets web et mobile réalisés par Dimitri Nelson Baliguini Demba : marketplace, SaaS, applications de gestion."
+        url="/projets"
+      />
+
       <h1 className="font-display font-bold text-3xl">Projets</h1>
 
       {loadError && (
