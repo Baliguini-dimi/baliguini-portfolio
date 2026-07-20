@@ -8,6 +8,8 @@ import {
 } from '../../lib/posts'
 import { getAllCategories } from '../../lib/projects'
 import { validatePostForm } from '../../lib/validation'
+import { slugify } from '../../lib/slugify'
+import ImageUploadField from '../../components/admin/ImageUploadField'
 
 const emptyForm = {
   slug: '',
@@ -18,15 +20,6 @@ const emptyForm = {
   cover_image_url: '',
   reading_time_minutes: '',
   status: 'draft',
-}
-
-function slugify(text) {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
 }
 
 function estimateReadingTime(text) {
@@ -239,20 +232,11 @@ function AdminPostForm() {
           </select>
         </div>
 
-        <div>
-          <label htmlFor="cover_image_url" className={labelClass}>
-            URL image de couverture (upload à venir en étape 16)
-          </label>
-          <input
-            id="cover_image_url"
-            value={form.cover_image_url}
-            onChange={(e) => updateField('cover_image_url', e.target.value)}
-            className={inputClass}
-          />
-          {fieldErrors.cover_image_url && (
-            <p className="font-mono text-xs text-ember mt-1">{fieldErrors.cover_image_url}</p>
-          )}
-        </div>
+        <ImageUploadField
+          label="Image de couverture"
+          value={form.cover_image_url}
+          onChange={(url) => updateField('cover_image_url', url)}
+        />
 
         <div className="grid grid-cols-2 gap-4 items-end">
           <div>
