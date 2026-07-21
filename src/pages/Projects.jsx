@@ -2,12 +2,14 @@ import { useEffect, useMemo, useState } from 'react'
 import { getAllProjects } from '../lib/projects'
 import ProjectCard from '../components/projects/ProjectCard'
 import SEO from '../components/seo/SEO'
+import { usePageView } from '../hooks/usePageView'   // <-- import ajouté
 
 function Projects() {
   const [projects, setProjects] = useState([])
   const [loadError, setLoadError] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState('all')
+  usePageView('projects_list')   // <-- appel ajouté
 
   useEffect(() => {
     getAllProjects()

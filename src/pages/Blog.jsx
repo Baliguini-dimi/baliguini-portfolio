@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import { getAllPosts } from '../lib/posts'
 import PostCard from '../components/blog/PostCard'
 import SEO from '../components/seo/SEO'
+import { usePageView } from '../hooks/usePageView'   // <-- import ajouté
 
 function Blog() {
   const [posts, setPosts] = useState([])
   const [loadError, setLoadError] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  usePageView('blog_list')   // <-- appel ajouté
 
   useEffect(() => {
     getAllPosts()

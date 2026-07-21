@@ -5,9 +5,14 @@ import SEO, { SITE_URL } from '../components/seo/SEO'
 import { formatDate } from '../lib/formatDate'
 import { getPostBySlug, getAllPosts } from '../lib/posts'
 import PostCard from '../components/blog/PostCard'
+import { usePageView } from '../hooks/usePageView'        // <-- import ajouté
+import { useReadingTime } from '../hooks/useReadingTime'  // <-- import ajouté
 
 function BlogDetail() {
   const { slug } = useParams()
+  usePageView('blog_detail', slug)   // <-- appel ajouté
+  useReadingTime(slug)               // <-- appel ajouté
+
   const [post, setPost] = useState(null)
   const [relatedPosts, setRelatedPosts] = useState([])
   const [loadError, setLoadError] = useState(null)

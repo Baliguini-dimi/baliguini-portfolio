@@ -4,9 +4,12 @@ import { getFeaturedProjects, getOnlineProjectsCount } from '../lib/projects'
 import { getSiteSettings } from '../lib/siteSettings'
 import ProjectCard from '../components/projects/ProjectCard'
 import SEO, { SITE_URL } from '../components/seo/SEO'
+import { usePageView } from '../hooks/usePageView'   // <-- import ajouté
 
 function Home() {
   const location = useLocation()
+  usePageView('home')   // <-- appel ajouté
+
   const [projects, setProjects] = useState([])
   const [projectCount, setProjectCount] = useState(null)
   const [settings, setSettings] = useState(null)

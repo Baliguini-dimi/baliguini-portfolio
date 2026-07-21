@@ -41,6 +41,19 @@ function AdminDashboard() {
         >
           Gérer les articles
         </Link>
+        <Link
+          to="/admin/reglages"
+          className="font-mono text-sm text-signal border border-signal rounded px-4 py-2 hover:bg-signal hover:text-ink transition-colors"
+        >
+          Reglages du site
+        </Link>
+        {/* Nouveau lien vers les statistiques */}
+        <Link
+          to="/admin/statistiques"
+          className="font-mono text-sm text-signal border border-signal rounded px-4 py-2 hover:bg-signal hover:text-ink transition-colors"
+        >
+          Statistiques
+        </Link>
       </div>
     </div>
   )

@@ -3,9 +3,12 @@ import { Link, useParams } from 'react-router-dom'
 import { getProjectBySlug } from '../lib/projects'
 import SEO from '../components/seo/SEO'
 import { projectStatusLabels } from '../lib/statusLabels'
+import { usePageView } from '../hooks/usePageView'   // <-- import ajouté
 
 function ProjectDetail() {
   const { slug } = useParams()
+  usePageView('project_detail', slug)   // <-- appel ajouté
+
   const [project, setProject] = useState(null)
   const [loadError, setLoadError] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
