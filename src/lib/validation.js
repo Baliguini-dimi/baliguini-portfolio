@@ -34,6 +34,18 @@ export function validateOptionalUrl(value, fieldLabel) {
   return null
 }
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+export function validateEmail(email) {
+  if (!email || email.trim().length === 0) {
+    return "L'email est obligatoire."
+  }
+  if (!EMAIL_PATTERN.test(email.trim())) {
+    return 'Merci de saisir une adresse email valide.'
+  }
+  return null
+}
+
 export function validateProjectForm(form) {
   const errors = {}
 

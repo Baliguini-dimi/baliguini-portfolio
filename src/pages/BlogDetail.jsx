@@ -5,13 +5,14 @@ import SEO, { SITE_URL } from '../components/seo/SEO'
 import { formatDate } from '../lib/formatDate'
 import { getPostBySlug, getAllPosts } from '../lib/posts'
 import PostCard from '../components/blog/PostCard'
-import { usePageView } from '../hooks/usePageView'        // <-- import ajouté
-import { useReadingTime } from '../hooks/useReadingTime'  // <-- import ajouté
+import { usePageView } from '../hooks/usePageView'
+import { useReadingTime } from '../hooks/useReadingTime'
+import NewsletterForm from '../components/newsletter/NewsletterForm'   // <-- import ajouté
 
 function BlogDetail() {
   const { slug } = useParams()
-  usePageView('blog_detail', slug)   // <-- appel ajouté
-  useReadingTime(slug)               // <-- appel ajouté
+  usePageView('blog_detail', slug)
+  useReadingTime(slug)
 
   const [post, setPost] = useState(null)
   const [relatedPosts, setRelatedPosts] = useState([])
@@ -104,6 +105,11 @@ function BlogDetail() {
 
       <div className="font-body text-bone leading-relaxed mt-8 prose-content">
         <ReactMarkdown>{post.content}</ReactMarkdown>
+      </div>
+
+      {/* Formulaire d'inscription à la newsletter */}
+      <div className="mt-16 pt-8 border-t border-surface">
+        <NewsletterForm />
       </div>
 
       {relatedPosts.length > 0 && (
