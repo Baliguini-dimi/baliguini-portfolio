@@ -94,3 +94,38 @@ export async function deletePost(id) {
     throw new Error(`Impossible de supprimer l'article : ${error.message}`)
   }
 }
+
+// ---- Ajouts ----
+
+export async function duplicatePost(post) {
+  const { id, created_at, updated_at, published_at, categories, ...rest } = post
+
+  const duplicate = {
+    ...rest,
+    slug: `${rest.slug}-copie`,
+    title: `${rest.title} (copie)`,
+    status: 'draft',
+  }
+
+  return createPost(duplicate)
+}
+
+export async function getIncompletePosts() {
+  const thirtyDaysAgo = new Date()
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+
+  const { data, error } = await supabase
+    .from('posts')
+    .select('id, title, slug, status, category_id, created_at')
+    .or(`status.eq.draft,category_id.is.null`)
+
+  if (error) {
+    throw new Error(`Impossible de verifier les articles incomplets : ${error.message}`)
+  }
+
+  return data.filter((p) => {
+    const isOldDraft = p.status === 'draft' && new Date(p.created_at) < thirtyDaysAgo
+    const missingCategory = !p.category_id
+    return isOldDraft || missingCategory
+  })
+}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getAllPosts, deletePost } from '../../lib/posts'
-import { postStatusLabels } from '../../lib/statusLabels' // ou un équivalent pour articles
+import { getAllPosts, deletePost, duplicatePost } from '../../lib/posts'
+import { postStatusLabels } from '../../lib/statusLabels'
 import AdminPageHeader from '../../components/admin/AdminPageHeader'
 
 function AdminPostsList() {
@@ -36,6 +36,15 @@ function AdminPostsList() {
       window.alert(error.message)
     } finally {
       setDeletingId(null)
+    }
+  }
+
+  async function handleDuplicate(post) {
+    try {
+      await duplicatePost(post)
+      loadPosts()
+    } catch (error) {
+      window.alert(error.message)
     }
   }
 
@@ -77,6 +86,13 @@ function AdminPostsList() {
               </div>
 
               <div className="flex items-center gap-3 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleDuplicate(post)}
+                  className="font-mono text-xs text-mist hover:text-bone"
+                >
+                  Dupliquer
+                </button>
                 <Link
                   to={`/admin/articles/${post.id}/modifier`}
                   className="font-mono text-xs text-signal hover:opacity-80"

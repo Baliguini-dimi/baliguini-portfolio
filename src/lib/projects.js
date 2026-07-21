@@ -120,3 +120,39 @@ export async function getOnlineProjectsCount() {
 
   return count
 }
+
+// ---- Ajouts ----
+
+export async function duplicateProject(project) {
+  const { id, created_at, updated_at, categories, ...rest } = project
+
+  const duplicate = {
+    ...rest,
+    slug: `${rest.slug}-copie`,
+    title: `${rest.title} (copie)`,
+    status: 'draft',
+    featured: false,
+  }
+
+  return createProject(duplicate)
+}
+
+export async function getIncompleteProjects() {
+  const thirtyDaysAgo = new Date()
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+
+  const { data, error } = await supabase
+    .from('projects')
+    .select('id, title, slug, status, cover_image_url, created_at')
+    .or(`status.eq.draft,cover_image_url.is.null`)
+
+  if (error) {
+    throw new Error(`Impossible de verifier les projets incomplets : ${error.message}`)
+  }
+
+  return data.filter((p) => {
+    const isOldDraft = p.status === 'draft' && new Date(p.created_at) < thirtyDaysAgo
+    const missingImage = !p.cover_image_url
+    return isOldDraft || missingImage
+  })
+}

@@ -80,6 +80,16 @@ function AdminPostForm() {
     updateField('reading_time_minutes', String(estimateReadingTime(form.content)))
   }
 
+  // ---- Ajout : effet avec debounce pour le temps de lecture automatique ----
+  useEffect(() => {
+    if (!form.content) return
+    const timeout = setTimeout(() => {
+      updateField('reading_time_minutes', String(estimateReadingTime(form.content)))
+    }, 1000)
+    return () => clearTimeout(timeout)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.content])
+
   async function handleSubmit(event) {
     event.preventDefault()
     setError(null)

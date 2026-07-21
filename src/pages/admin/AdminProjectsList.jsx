@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getAllProjects, deleteProject } from '../../lib/projects'
+import { getAllProjects, deleteProject, duplicateProject } from '../../lib/projects'
 import { projectStatusLabels } from '../../lib/statusLabels'
 import AdminPageHeader from '../../components/admin/AdminPageHeader'
 
@@ -39,17 +39,28 @@ function AdminProjectsList() {
     }
   }
 
+  async function handleDuplicate(project) {
+    try {
+      await duplicateProject(project)
+      loadProjects()
+    } catch (error) {
+      window.alert(error.message)
+    }
+  }
+
   return (
     <div className="max-w-6xl mx-auto px-6 py-24">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="font-display font-bold text-3xl">Projets</h1>
-        <Link
-          to="/admin/projets/nouveau"
-          className="font-mono text-sm bg-signal text-ink rounded px-4 py-2 hover:opacity-90 transition-opacity"
-        >
-          + Nouveau projet
-        </Link>
-      </div>
+      <AdminPageHeader
+        title="Projets"
+        action={
+          <Link
+            to="/admin/projets/nouveau"
+            className="font-mono text-sm bg-signal text-ink rounded px-4 py-2 hover:opacity-90 transition-opacity"
+          >
+            + Nouveau projet
+          </Link>
+        }
+      />
 
       {loadError && (
         <p className="font-mono text-sm text-ember mt-6">{loadError}</p>
@@ -75,6 +86,13 @@ function AdminProjectsList() {
               </div>
 
               <div className="flex items-center gap-3 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleDuplicate(project)}
+                  className="font-mono text-xs text-mist hover:text-bone"
+                >
+                  Dupliquer
+                </button>
                 <Link
                   to={`/admin/projets/${project.id}/modifier`}
                   className="font-mono text-xs text-signal hover:opacity-80"
