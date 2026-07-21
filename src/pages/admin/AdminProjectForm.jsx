@@ -9,6 +9,7 @@ import {
 import { validateProjectForm } from '../../lib/validation'
 import { slugify } from '../../lib/slugify'
 import ImageUploadField from '../../components/admin/ImageUploadField'
+import { generateProjectDescription } from '../../lib/generateDescription'
 
 const emptyForm = {
   slug: '',
@@ -38,6 +39,7 @@ function AdminProjectForm() {
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState(null)
   const [fieldErrors, setFieldErrors] = useState({})
+  const [isGenerating, setIsGenerating] = useState(false)   // <-- état ajouté
 
   useEffect(() => {
     getAllCategories().then(setCategories).catch((err) => setError(err.message))
@@ -79,6 +81,30 @@ function AdminProjectForm() {
       title: value,
       slug: isEditMode ? current.slug : slugify(value),
     }))
+  }
+
+  // Fonction pour générer la description avec l'IA
+  async function handleGenerateDescription() {
+    if (!form.title.trim()) {
+      setError('Renseigne au moins le titre avant de generer une description.')
+      return
+    }
+
+    setIsGenerating(true)
+    setError(null)
+
+    try {
+      const techArray = form.tech_stack
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean)
+      const description = await generateProjectDescription(form.title, techArray)
+      updateField('short_description', description)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   async function handleSubmit(event) {
@@ -175,8 +201,19 @@ function AdminProjectForm() {
           )}
         </div>
 
+        {/* Champ Description courte avec bouton IA */}
         <div>
-          <label htmlFor="short_description" className={labelClass}>Description courte *</label>
+          <div className="flex items-center justify-between mb-1">
+            <label htmlFor="short_description" className={labelClass}>Description courte *</label>
+            <button
+              type="button"
+              onClick={handleGenerateDescription}
+              disabled={isGenerating}
+              className="font-mono text-xs text-signal hover:opacity-80 disabled:opacity-50"
+            >
+              {isGenerating ? 'Generation...' : 'Generer avec IA'}
+            </button>
+          </div>
           <input
             id="short_description"
             required

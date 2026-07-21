@@ -11,6 +11,15 @@ export async function subscribeToNewsletter(email) {
     }
     throw new Error(`Impossible de finaliser l'inscription : ${error.message}`)
   }
+
+  // Notification secondaire : on ne bloque pas l'inscription
+  fetch('/api/notify-subscriber', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email.trim().toLowerCase() }),
+  }).catch(() => {
+    // Échec silencieux – ne jamais interrompre le flux d'inscription
+  })
 }
 
 export async function getAllSubscribers() {
