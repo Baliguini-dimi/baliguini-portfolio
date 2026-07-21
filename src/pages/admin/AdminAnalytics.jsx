@@ -7,6 +7,7 @@ import {
   getTopPosts,
   getAverageReadingTime,
 } from '../../lib/analyticsStats'
+import AdminPageHeader from '../../components/admin/AdminPageHeader'
 
 const pageTypeLabels = {
   home: 'Accueil',
@@ -76,8 +77,7 @@ function AdminAnalytics() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-24">
-      <h1 className="font-display font-bold text-3xl">Statistiques</h1>
-      <p className="font-mono text-mist text-xs mt-2">30 derniers jours</p>
+      <AdminPageHeader title="Statistiques" description="30 derniers jours" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
         <div className="bg-surface rounded-lg p-6">

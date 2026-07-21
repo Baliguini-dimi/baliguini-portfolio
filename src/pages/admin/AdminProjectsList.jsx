@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getAllProjects, deleteProject } from '../../lib/projects'
 import { projectStatusLabels } from '../../lib/statusLabels'
+import AdminPageHeader from '../../components/admin/AdminPageHeader'
 
 function AdminProjectsList() {
   const [projects, setProjects] = useState([])

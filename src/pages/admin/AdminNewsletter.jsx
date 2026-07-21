@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getAllSubscribers, deleteSubscriber } from '../../lib/newsletter'
 import { formatDate } from '../../lib/formatDate'
+import AdminPageHeader from '../../components/admin/AdminPageHeader'
 
 function exportToCsv(subscribers) {
   const header = 'email,date_inscription\n'
@@ -52,23 +53,21 @@ function AdminNewsletter() {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-24">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="font-display font-bold text-3xl">Newsletter</h1>
-          <p className="font-mono text-xs text-mist mt-2">
-            {subscribers.length} inscrit{subscribers.length > 1 ? 's' : ''}
-          </p>
-        </div>
-        {subscribers.length > 0 && (
-          <button
-            type="button"
-            onClick={() => exportToCsv(subscribers)}
-            className="font-mono text-sm bg-signal text-ink rounded px-4 py-2 hover:opacity-90 transition-opacity"
-          >
-            Exporter en CSV
-          </button>
-        )}
-      </div>
+      <AdminPageHeader
+        title="Newsletter"
+        description={`${subscribers.length} inscrit${subscribers.length > 1 ? 's' : ''}`}
+        action={
+          subscribers.length > 0 && (
+            <button
+              type="button"
+              onClick={() => exportToCsv(subscribers)}
+              className="font-mono text-sm bg-signal text-ink rounded px-4 py-2 hover:opacity-90 transition-opacity"
+            >
+              Exporter en CSV
+            </button>
+          )
+        }
+      />
 
       {error && (
         <p className="font-mono text-sm text-ember mt-6">{error}</p>

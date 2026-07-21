@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getSiteSettings, updateSiteSettings } from '../../lib/siteSettings'
 import ImageUploadField from '../../components/admin/ImageUploadField'
+import AdminPageHeader from '../../components/admin/AdminPageHeader'
 
 function AdminSiteSettings() {
   const [settings, setSettings] = useState(null)
@@ -61,7 +62,7 @@ function AdminSiteSettings() {
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-24">
-      <h1 className="font-display font-bold text-3xl">Reglages du site</h1>
+      <AdminPageHeader title="Reglages du site" />
 
       <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-6">
         <div className="pt-2">

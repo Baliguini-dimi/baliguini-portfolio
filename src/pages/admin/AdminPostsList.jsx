@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getAllPosts, deletePost } from '../../lib/posts'
-import { postStatusLabels } from '../../lib/statusLabels'
+import { postStatusLabels } from '../../lib/statusLabels' // ou un équivalent pour articles
+import AdminPageHeader from '../../components/admin/AdminPageHeader'
 
 function AdminPostsList() {
   const [posts, setPosts] = useState([])
@@ -23,7 +24,7 @@ function AdminPostsList() {
 
   async function handleDelete(post) {
     const confirmed = window.confirm(
-      `Supprimer definitivement "${post.title}" ? Cette action est irreversible.`
+      `Supprimer définitivement "${post.title}" ? Cette action est irréversible.`
     )
     if (!confirmed) return
 
@@ -40,15 +41,17 @@ function AdminPostsList() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-24">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="font-display font-bold text-3xl">Articles</h1>
-        <Link
-          to="/admin/articles/nouveau"
-          className="font-mono text-sm bg-signal text-ink rounded px-4 py-2 hover:opacity-90 transition-opacity"
-        >
-          + Nouvel article
-        </Link>
-      </div>
+      <AdminPageHeader
+        title="Articles"
+        action={
+          <Link
+            to="/admin/articles/nouveau"
+            className="font-mono text-sm bg-signal text-ink rounded px-4 py-2 hover:opacity-90 transition-opacity"
+          >
+            + Nouvel article
+          </Link>
+        }
+      />
 
       {loadError && (
         <p className="font-mono text-sm text-ember mt-6">{loadError}</p>
@@ -68,7 +71,8 @@ function AdminPostsList() {
               <div className="min-w-0">
                 <p className="font-body text-bone truncate">{post.title}</p>
                 <p className="font-mono text-xs text-mist mt-1">
-                  {postStatusLabels[post.status] ?? post.status}
+                  {post.status ? (postStatusLabels[post.status] ?? post.status) : 'Publié'}
+                  {post.featured && ' · mis en avant'}
                 </p>
               </div>
 
