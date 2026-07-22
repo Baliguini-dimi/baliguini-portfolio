@@ -2,18 +2,21 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { getFeaturedProjects, getOnlineProjectsCount } from '../lib/projects'
 import { getSiteSettings } from '../lib/siteSettings'
+import { getRecentPosts } from '../lib/posts'           // <-- import ajouté
 import ProjectCard from '../components/projects/ProjectCard'
+import PostCard from '../components/blog/PostCard'       // <-- import ajouté
 import SEO, { SITE_URL } from '../components/seo/SEO'
-import { usePageView } from '../hooks/usePageView'   // <-- import ajouté
+import { usePageView } from '../hooks/usePageView'
 
 function Home() {
   const location = useLocation()
-  usePageView('home')   // <-- appel ajouté
+  usePageView('home')
 
   const [projects, setProjects] = useState([])
   const [projectCount, setProjectCount] = useState(null)
   const [settings, setSettings] = useState(null)
   const [loadError, setLoadError] = useState(null)
+  const [recentPosts, setRecentPosts] = useState([])     // <-- état ajouté
 
   useEffect(() => {
     if (location.hash) {
@@ -29,11 +32,13 @@ function Home() {
       getFeaturedProjects(),
       getOnlineProjectsCount(),
       getSiteSettings(),
+      getRecentPosts(3),                                 // <-- appel ajouté
     ])
-      .then(([featuredProjects, count, siteSettings]) => {
+      .then(([featuredProjects, count, siteSettings, posts]) => {
         setProjects(featuredProjects)
         setProjectCount(count)
         setSettings(siteSettings)
+        setRecentPosts(posts)                            // <-- remplissage
       })
       .catch((error) => setLoadError(error.message))
   }, [])
@@ -126,10 +131,17 @@ function Home() {
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-6 py-24">
-        <h2 className="font-display font-bold text-2xl">Derniers articles</h2>
-        <p className="font-mono text-mist text-sm mt-2">a construire</p>
-      </section>
+      {/* Section des derniers articles – affichée uniquement s'il y en a */}
+      {recentPosts.length > 0 && (
+        <section className="max-w-6xl mx-auto px-6 py-24">
+          <h2 className="font-display font-bold text-2xl">Derniers articles</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+            {recentPosts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <section id="a-propos" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-20">
         <h2 className="font-display font-bold text-2xl">A propos</h2>
