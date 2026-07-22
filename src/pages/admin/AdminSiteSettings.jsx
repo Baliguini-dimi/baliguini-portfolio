@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getSiteSettings, updateSiteSettings } from '../../lib/siteSettings'
 import ImageUploadField from '../../components/admin/ImageUploadField'
+import DocumentUploadField from '../../components/admin/DocumentUploadField'
 import AdminPageHeader from '../../components/admin/AdminPageHeader'
 
 function AdminSiteSettings() {
@@ -128,6 +129,27 @@ function AdminSiteSettings() {
             className={inputClass}
           />
         </div>
+
+        {/* Nouvelle section Documents */}
+        <div className="pt-4 border-t border-surface">
+          <h2 className="font-display font-bold text-lg text-mist">Documents</h2>
+        </div>
+
+        <DocumentUploadField
+          label="CV (PDF)"
+          value={settings.cv_url}
+          onChange={(url) => updateField('cv_url', url)}
+          accept="application/pdf"
+          hint="Format PDF uniquement — 20 Mo maximum."
+        />
+
+        <DocumentUploadField
+          label="Diplomes (ZIP)"
+          value={settings.diplomas_zip_url}
+          onChange={(url) => updateField('diplomas_zip_url', url)}
+          accept="application/zip"
+          hint="Fichier ZIP regroupant tous les diplomes — 20 Mo maximum."
+        />
 
         <div className="pt-4 border-t border-surface">
           <h2 className="font-display font-bold text-lg text-mist">Contact</h2>

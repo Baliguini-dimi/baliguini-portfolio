@@ -143,11 +143,39 @@ function Home() {
         </section>
       )}
 
+      {/* Section À propos + Documents */}
       <section id="a-propos" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-20">
         <h2 className="font-display font-bold text-2xl">A propos</h2>
         <p className="font-body text-bone leading-relaxed mt-4 max-w-2xl whitespace-pre-wrap">
           {settings.about_text}
         </p>
+
+        {(settings.cv_url || settings.diplomas_zip_url) && (
+          <div className="flex flex-wrap gap-4 mt-8">
+            {settings.cv_url && (
+              <a
+                href={settings.cv_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                download
+                className="font-mono text-sm bg-signal text-ink rounded px-4 py-2 hover:opacity-90 transition-opacity"
+              >
+                Telecharger le CV
+              </a>
+            )}
+            {settings.diplomas_zip_url && (
+              <a
+                href={settings.diplomas_zip_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                download
+                className="font-mono text-sm text-signal border border-signal rounded px-4 py-2 hover:bg-signal hover:text-ink transition-colors"
+              >
+                Telecharger les diplomes
+              </a>
+            )}
+          </div>
+        )}
       </section>
 
       <section id="contact" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-20">
