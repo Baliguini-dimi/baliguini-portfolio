@@ -20,6 +20,7 @@ const emptyForm = {
   cover_image_url: '',
   reading_time_minutes: '',
   status: 'draft',
+  scheduled_for: '',   // <-- nouveau champ
 }
 
 function estimateReadingTime(text) {
@@ -58,6 +59,9 @@ function AdminPostForm() {
           cover_image_url: post.cover_image_url ?? '',
           reading_time_minutes: post.reading_time_minutes ?? '',
           status: post.status ?? 'draft',
+          scheduled_for: post.scheduled_for
+            ? new Date(post.scheduled_for).toISOString().slice(0, 16)
+            : '',
         })
       })
       .catch((err) => setError(err.message))
@@ -80,7 +84,7 @@ function AdminPostForm() {
     updateField('reading_time_minutes', String(estimateReadingTime(form.content)))
   }
 
-  // ---- Ajout : effet avec debounce pour le temps de lecture automatique ----
+  // ---- Effet avec debounce pour le temps de lecture automatique ----
   useEffect(() => {
     if (!form.content) return
     const timeout = setTimeout(() => {
@@ -118,6 +122,7 @@ function AdminPostForm() {
         : null,
       status: form.status,
       published_at: isPublishing ? new Date().toISOString() : null,
+      scheduled_for: form.scheduled_for ? new Date(form.scheduled_for).toISOString() : null,   // <-- ajout
     }
 
     try {
@@ -286,6 +291,25 @@ function AdminPostForm() {
             Passer en "Publie" enregistre la date de publication a maintenant.
           </p>
         </div>
+
+        {/* --- Nouveau bloc : programmation --- */}
+        {form.status === 'draft' && (
+          <div>
+            <label htmlFor="scheduled_for" className={labelClass}>
+              Publication programmee (optionnel)
+            </label>
+            <input
+              id="scheduled_for"
+              type="datetime-local"
+              value={form.scheduled_for}
+              onChange={(e) => updateField('scheduled_for', e.target.value)}
+              className={inputClass}
+            />
+            <p className="font-mono text-xs text-mist/60 mt-1">
+              L'article passera en "Publie" automatiquement a cette date. Verification une fois par jour, l'heure exacte n'est pas garantie (limite du plan gratuit).
+            </p>
+          </div>
+        )}
 
         {error && (
           <p className="font-mono text-sm text-ember">{error}</p>
