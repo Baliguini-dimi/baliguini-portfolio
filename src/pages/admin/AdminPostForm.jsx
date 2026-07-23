@@ -6,10 +6,12 @@ import {
   updatePost,
   getPostById,
 } from '../../lib/posts'
-import { getAllCategories } from '../../lib/categories'   // <-- import depuis categories
+import { getAllCategories } from '../../lib/categories'
 import { validatePostForm } from '../../lib/validation'
 import { slugify } from '../../lib/slugify'
 import ImageUploadField from '../../components/admin/ImageUploadField'
+import GalleryField from '../../components/admin/GalleryField'                     // <-- import ajouté
+import { getPostImages, addPostImage, deletePostImage } from '../../lib/postImages' // <-- import ajouté
 
 const emptyForm = {
   slug: '',
@@ -274,6 +276,15 @@ function AdminPostForm() {
             Estimer depuis le contenu
           </button>
         </div>
+
+        {/* Galerie d'images pour l'article */}
+        <GalleryField
+          entityId={isEditMode ? id : null}
+          entityLabel="l'article"
+          getImages={getPostImages}
+          addImage={addPostImage}
+          deleteImage={deletePostImage}
+        />
 
         <div>
           <label htmlFor="status" className={labelClass}>Statut</label>

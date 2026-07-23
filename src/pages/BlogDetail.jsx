@@ -4,10 +4,11 @@ import ReactMarkdown from 'react-markdown'
 import SEO, { SITE_URL } from '../components/seo/SEO'
 import { formatDate } from '../lib/formatDate'
 import { getPostBySlug, getAllPosts } from '../lib/posts'
+import { getPostImages } from '../lib/postImages'                     // <-- import ajouté
 import PostCard from '../components/blog/PostCard'
 import { usePageView } from '../hooks/usePageView'
 import { useReadingTime } from '../hooks/useReadingTime'
-import NewsletterForm from '../components/newsletter/NewsletterForm'   // <-- import ajouté
+import NewsletterForm from '../components/newsletter/NewsletterForm'
 
 function BlogDetail() {
   const { slug } = useParams()
@@ -18,6 +19,7 @@ function BlogDetail() {
   const [relatedPosts, setRelatedPosts] = useState([])
   const [loadError, setLoadError] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [postImages, setPostImages] = useState([])                    // <-- état ajouté
 
   useEffect(() => {
     setIsLoading(true)
@@ -27,6 +29,8 @@ function BlogDetail() {
     getPostBySlug(slug)
       .then((data) => {
         setPost(data)
+        // Chargement des images de la galerie
+        getPostImages(data.id).then(setPostImages).catch(() => setPostImages([]))
         return getAllPosts()
       })
       .then((allPosts) => {
@@ -106,6 +110,20 @@ function BlogDetail() {
       <div className="font-body text-bone leading-relaxed mt-8 prose-content">
         <ReactMarkdown>{post.content}</ReactMarkdown>
       </div>
+
+      {/* Galerie d'images de l'article */}
+      {postImages.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
+          {postImages.map((image) => (
+            <img
+              key={image.id}
+              src={image.image_url}
+              alt={image.alt_text ?? post.title}
+              className="w-full h-32 object-cover rounded border border-surface"
+            />
+          ))}
+        </div>
+      )}
 
       {/* Formulaire d'inscription à la newsletter */}
       <div className="mt-16 pt-8 border-t border-surface">

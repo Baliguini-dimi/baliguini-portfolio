@@ -9,7 +9,8 @@ import { getAllCategories } from '../../lib/categories'
 import { validateProjectForm } from '../../lib/validation'
 import { slugify } from '../../lib/slugify'
 import ImageUploadField from '../../components/admin/ImageUploadField'
-import ProjectGalleryField from '../../components/admin/ProjectGalleryField'   // <-- import ajouté
+import GalleryField from '../../components/admin/GalleryField'                 // <-- remplacé
+import { getProjectImages, addProjectImage, deleteProjectImage } from '../../lib/projectImages'  // <-- ajouté
 import { generateProjectDescription } from '../../lib/generateDescription'
 
 const emptyForm = {
@@ -344,8 +345,14 @@ function AdminProjectForm() {
           </div>
         </div>
 
-        {/* Composant Gallery – affiché uniquement en mode édition (car il nécessite un projet existant) */}
-        <ProjectGalleryField projectId={isEditMode ? id : null} />
+        {/* Galerie d'images - remplace ProjectGalleryField */}
+        <GalleryField
+          entityId={isEditMode ? id : null}
+          entityLabel="le projet"
+          getImages={getProjectImages}
+          addImage={addProjectImage}
+          deleteImage={deleteProjectImage}
+        />
 
         <label className="flex items-center gap-2 font-mono text-sm text-mist">
           <input

@@ -1,26 +1,25 @@
 import { useEffect, useState } from 'react'
-import { getProjectImages, addProjectImage, deleteProjectImage } from '../../lib/projectImages'
 import { uploadProjectImage } from '../../lib/uploadImage'
 
 const MAX_IMAGES = 4
 
-function ProjectGalleryField({ projectId }) {
+function GalleryField({ entityId, entityLabel, getImages, addImage, deleteImage }) {
   const [images, setImages] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState(null)
 
   function loadImages() {
-    getProjectImages(projectId)
+    getImages(entityId)
       .then(setImages)
       .catch((err) => setError(err.message))
       .finally(() => setIsLoading(false))
   }
 
   useEffect(() => {
-    if (projectId) loadImages()
+    if (entityId) loadImages()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId])
+  }, [entityId])
 
   async function handleFileChange(event) {
     const file = event.target.files?.[0]
@@ -31,7 +30,7 @@ function ProjectGalleryField({ projectId }) {
 
     try {
       const publicUrl = await uploadProjectImage(file)
-      await addProjectImage(projectId, publicUrl)
+      await addImage(entityId, publicUrl)
       loadImages()
     } catch (err) {
       setError(err.message)
@@ -43,19 +42,19 @@ function ProjectGalleryField({ projectId }) {
 
   async function handleDelete(imageId) {
     try {
-      await deleteProjectImage(imageId)
+      await deleteImage(imageId)
       setImages((current) => current.filter((img) => img.id !== imageId))
     } catch (err) {
       window.alert(err.message)
     }
   }
 
-  if (!projectId) {
+  if (!entityId) {
     return (
       <div>
         <p className="font-mono text-xs text-mist block mb-1">Galerie d'images</p>
         <p className="font-mono text-xs text-mist/60">
-          Enregistre d'abord le projet une premiere fois pour pouvoir ajouter des images de galerie.
+          Enregistre d'abord {entityLabel} une premiere fois pour pouvoir ajouter des images de galerie.
         </p>
       </div>
     )
@@ -110,4 +109,4 @@ function ProjectGalleryField({ projectId }) {
   )
 }
 
-export default ProjectGalleryField
+export default GalleryField
