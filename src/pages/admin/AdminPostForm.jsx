@@ -6,7 +6,7 @@ import {
   updatePost,
   getPostById,
 } from '../../lib/posts'
-import { getAllCategories } from '../../lib/projects'
+import { getAllCategories } from '../../lib/categories'   // <-- import depuis categories
 import { validatePostForm } from '../../lib/validation'
 import { slugify } from '../../lib/slugify'
 import ImageUploadField from '../../components/admin/ImageUploadField'
@@ -20,7 +20,7 @@ const emptyForm = {
   cover_image_url: '',
   reading_time_minutes: '',
   status: 'draft',
-  scheduled_for: '',   // <-- nouveau champ
+  scheduled_for: '',
 }
 
 function estimateReadingTime(text) {
@@ -84,7 +84,6 @@ function AdminPostForm() {
     updateField('reading_time_minutes', String(estimateReadingTime(form.content)))
   }
 
-  // ---- Effet avec debounce pour le temps de lecture automatique ----
   useEffect(() => {
     if (!form.content) return
     const timeout = setTimeout(() => {
@@ -122,7 +121,7 @@ function AdminPostForm() {
         : null,
       status: form.status,
       published_at: isPublishing ? new Date().toISOString() : null,
-      scheduled_for: form.scheduled_for ? new Date(form.scheduled_for).toISOString() : null,   // <-- ajout
+      scheduled_for: form.scheduled_for ? new Date(form.scheduled_for).toISOString() : null,
     }
 
     try {
@@ -292,7 +291,6 @@ function AdminPostForm() {
           </p>
         </div>
 
-        {/* --- Nouveau bloc : programmation --- */}
         {form.status === 'draft' && (
           <div>
             <label htmlFor="scheduled_for" className={labelClass}>

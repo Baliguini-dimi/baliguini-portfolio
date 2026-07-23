@@ -16,6 +16,7 @@ import AdminPostForm from './pages/admin/AdminPostForm'
 import AdminSiteSettings from './pages/admin/AdminSiteSettings'
 import AdminAnalytics from './pages/admin/AdminAnalytics'
 import AdminNewsletter from './pages/admin/AdminNewsletter'
+import AdminCategories from './pages/admin/AdminCategories'     // <-- import ajouté
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="admin/articles" element={<AdminPostsList />} />
           <Route path="admin/articles/nouveau" element={<AdminPostForm />} />
           <Route path="admin/articles/:id/modifier" element={<AdminPostForm />} />
+          <Route path="admin/categories" element={<AdminCategories />} />   {/* <-- route ajoutée */}
           <Route path="admin/reglages" element={<AdminSiteSettings />} />
           <Route path="admin/statistiques" element={<AdminAnalytics />} />
           <Route path="admin/newsletter" element={<AdminNewsletter />} />

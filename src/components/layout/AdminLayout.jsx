@@ -6,6 +6,7 @@ const adminLinks = [
   { to: '/admin', label: 'Vue d\'ensemble', end: true },
   { to: '/admin/projets', label: 'Projets' },
   { to: '/admin/articles', label: 'Articles' },
+  { to: '/admin/categories', label: 'Categories' },      // <-- lien ajouté
   { to: '/admin/newsletter', label: 'Newsletter' },
   { to: '/admin/statistiques', label: 'Statistiques' },
   { to: '/admin/reglages', label: 'Reglages' },

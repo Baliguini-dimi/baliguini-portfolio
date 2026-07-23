@@ -4,8 +4,8 @@ import {
   createProject,
   updateProject,
   getProjectById,
-  getAllCategories,
 } from '../../lib/projects'
+import { getAllCategories } from '../../lib/categories'    // <-- import depuis categories
 import { validateProjectForm } from '../../lib/validation'
 import { slugify } from '../../lib/slugify'
 import ImageUploadField from '../../components/admin/ImageUploadField'
@@ -39,7 +39,7 @@ function AdminProjectForm() {
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState(null)
   const [fieldErrors, setFieldErrors] = useState({})
-  const [isGenerating, setIsGenerating] = useState(false)   // <-- état ajouté
+  const [isGenerating, setIsGenerating] = useState(false)
 
   useEffect(() => {
     getAllCategories().then(setCategories).catch((err) => setError(err.message))
@@ -83,7 +83,6 @@ function AdminProjectForm() {
     }))
   }
 
-  // Fonction pour générer la description avec l'IA
   async function handleGenerateDescription() {
     if (!form.title.trim()) {
       setError('Renseigne au moins le titre avant de generer une description.')
@@ -201,7 +200,6 @@ function AdminProjectForm() {
           )}
         </div>
 
-        {/* Champ Description courte avec bouton IA */}
         <div>
           <div className="flex items-center justify-between mb-1">
             <label htmlFor="short_description" className={labelClass}>Description courte *</label>

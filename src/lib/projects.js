@@ -95,19 +95,6 @@ export async function deleteProject(id) {
   }
 }
 
-export async function getAllCategories() {
-  const { data, error } = await supabase
-    .from('categories')
-    .select('*')
-    .order('name', { ascending: true })
-
-  if (error) {
-    throw new Error(`Impossible de charger les categories : ${error.message}`)
-  }
-
-  return data
-}
-
 export async function getOnlineProjectsCount() {
   const { count, error } = await supabase
     .from('projects')
