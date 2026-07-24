@@ -97,13 +97,13 @@ function Home() {
               <dt className="font-display font-bold text-2xl text-signal">
                 {projectCount ?? '—'}
               </dt>
-              <dd className="font-mono text-xs text-mist mt-1">projets deployes</dd>
+              <dd className="font-mono text-xs text-mist mt-1">Projets deployés</dd>
             </div>
             <div>
               <dt className="font-display font-bold text-2xl text-signal">
                 {settings.tech_count_label}
               </dt>
-              <dd className="font-mono text-xs text-mist mt-1">technologies maitrisees</dd>
+              <dd className="font-mono text-xs text-mist mt-1">Technologies maitrisées</dd>
             </div>
           </dl>
         </div>
